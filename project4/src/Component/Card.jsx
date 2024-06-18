@@ -1,22 +1,22 @@
-// src/components/UserCardList.js
+// http://localhost:3000/user DATA URL
 import React, { useState, useEffect } from 'react';
-import { getData, addCard, updateCard, deleteCard } from '../services/userService';
+import { getData, addCard, updateCard, deleteCard } from '../services/Service.js';
 
 const Card = () => {
-  const [users, setUsers] = useState([]);
-  const [newUser, setNewUser] = useState({ title: '', image: '' });
-  const [editingUser, setEditingUser] = useState(null);
+  const [datas, setdatas] = useState([]);
+  const [newData, setnewData] = useState({ title: '', image: '' });
+  const [editingData, seteditingData] = useState(null);
   const [editTitle, setEditTitle] = useState('');
   const [editImage, setEditImage] = useState('');
 
   useEffect(() => {
-    fetchUsers();
+    fetchdatas();
   }, []);
 
-  const fetchUsers = async () => {
+  const fetchdatas = async () => {
     try {
       const data = await getData();
-      setUsers(data);
+      setdatas(data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -24,9 +24,9 @@ const Card = () => {
 
   const handleAddCard = async () => {
     try {
-      const data = await addCard({ ...newUser });
-      setUsers([...users, data]);
-      setNewUser({ title: '', image: '' });
+      const data = await addCard({ ...newData });
+      setdatas([...datas, data]);
+      setnewData({ title: '', image: '' });
     } catch (error) {
       console.error('Error adding user:', error);
     }
@@ -34,10 +34,10 @@ const Card = () => {
 
   const handleUpdateCard = async () => {
     try {
-      const updatedUser = { ...editingUser, title: editTitle, image: editImage };
-      await updateCard(editingUser.id, updatedUser);
-      setUsers(users.map(user => (user.id === editingUser.id ? updatedUser : user)));
-      setEditingUser(null);
+      const updatedUser = { ...editingData, title: editTitle, image: editImage };
+      await updateCard(editingData.id, updatedUser);
+      setdatas(datas.map(user => (user.id === editingData.id ? updatedUser : user)));
+      seteditingData(null);
       setEditTitle('');
       setEditImage('');
     } catch (error) {
@@ -48,7 +48,7 @@ const Card = () => {
   const handleDeleteCard = async (id) => {
     try {
       await deleteCard(id);
-      setUsers(users.filter(user => user.id !== id));
+      setdatas(datas.filter(user => user.id !== id));
     } catch (error) {
       console.error('Error deleting user:', error);
     }
@@ -57,9 +57,9 @@ const Card = () => {
   return (
     <div className="container mx-auto p-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {users.map(user => (
+        {datas.map(user => (
           <div key={user.id} className="border rounded-lg p-4 shadow">
-            {editingUser?.id === user.id ? (
+            {editingData?.id === user.id ? (
               <div>
                 <input
                   type="text"
@@ -77,7 +77,7 @@ const Card = () => {
                   Save
                 </button>
                 <button onClick={() => {
-                  setEditingUser(null);
+                  seteditingData(null);
                   setEditTitle('');
                   setEditImage('');
                 }} className="bg-gray-500 text-white px-4 py-2 rounded ml-2">
@@ -89,7 +89,7 @@ const Card = () => {
                 <img src={user.image} alt={user.title} className="w-full h-40 object-cover mb-2" />
                 <h2 className="text-xl font-bold">{user.title}</h2>
                 <button onClick={() => {
-                  setEditingUser(user);
+                  seteditingData(user);
                   setEditTitle(user.title);
                   setEditImage(user.image);
                 }} className="bg-yellow-500 text-white px-4 py-2 rounded mt-2">
@@ -107,15 +107,15 @@ const Card = () => {
         <h2 className="text-xl font-bold mb-4">Add New Card</h2>
         <input
           type="text"
-          value={newUser.title}
-          onChange={e => setNewUser({ ...newUser, title: e.target.value })}
+          value={newData.title}
+          onChange={e => setnewData({ ...newData, title: e.target.value })}
           placeholder="Title"
           className="w-full p-2 border rounded mb-2"
         />
         <input
           type="text"
-          value={newUser.image}
-          onChange={e => setNewUser({ ...newUser, image: e.target.value })}
+          value={newData.image}
+          onChange={e => setnewData({ ...newData, image: e.target.value })}
           placeholder="Image URL"
           className="w-full p-2 border rounded mb-2"
         />
