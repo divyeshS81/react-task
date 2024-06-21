@@ -53,6 +53,7 @@ const Card = () => {
       console.error('Error deleting user:', error);
     }
   };
+  console.log(datas);
 
   return (
     <div className="container mx-auto p-4">
